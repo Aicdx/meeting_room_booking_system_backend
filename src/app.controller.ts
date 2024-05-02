@@ -2,6 +2,7 @@ import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EmailService } from './email/email.service';
 import { RedisService } from './redis/redis.service';
+import { RequireLogin, RequirePermission, UserInfo } from './custom.decorator';
 
 @Controller()
 export class AppController {
@@ -30,5 +31,21 @@ export class AppController {
       html: `<p>你的注册验证码是 ${code}</p>`,
     });
     return '发送成功';
+  }
+
+  @Get('aaa')
+  // @SetMetadata('require-login', true)
+  // @SetMetadata('require-permission', ['ddd'])
+  @RequireLogin()
+  @RequirePermission('ddd')
+  aaaa(@UserInfo('username') username: string, @UserInfo() userInfo) {
+    console.log(userInfo);
+    console.log(username);
+    return 'aaa';
+  }
+
+  @Get('bbb')
+  bbb() {
+    return 'bbb';
   }
 }
